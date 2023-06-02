@@ -2,4 +2,8 @@
         @foreach($errors->all() as $error)
             <div>{{$error}}</div>
         @endforeach
-    @endif
+@endif
+
+@if(session()->has('error'))
+    <div>{!!session('error')!!}</div>
+@endif

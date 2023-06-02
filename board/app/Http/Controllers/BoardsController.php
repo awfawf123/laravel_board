@@ -16,6 +16,11 @@ class BoardsController extends Controller
      */
     public function index()
     {
+        //로그인 체크
+        if(auth()->guest()){
+            return redirect()->route('users.login');
+        }
+
         $result = Boards::select(['id','title','hits','created_at','updated_at'])->orderBy('hits','desc')->get();
         return view('list')->with('data',$result);
     }
@@ -38,6 +43,7 @@ class BoardsController extends Controller
      */
     public function store(Request $req)
     {
+        // 유효성 검사
         $req->validate([
             'title' => 'required |between:3,30'
             ,'content' => 'required |max:1000'
@@ -90,7 +96,9 @@ class BoardsController extends Controller
         //     'title'=> $req->title
         //     ,'content' => $req->content
         // ]);
-        // 1
+
+        // 유효성 검사 방법1
+        // id는 request에 없기 때문에 배열형식으로 request에 넣어줌
         $arr = ['id' => $id];
         $req->request->add($arr);
 
@@ -107,7 +115,7 @@ class BoardsController extends Controller
         
         return redirect('/boards/'.$id);
 
-        // 2
+        // 유효성 검사 방법2
         $validator = Validator::make(
             $request->only('id','title','content')
             ,[
